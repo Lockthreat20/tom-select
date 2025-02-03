@@ -119,7 +119,7 @@
     "url": "https://opencollective.com/tom-select"
   },
   "dependencies": {
-    "@orchidjs/sifter": "^1.0.3",
-    "@orchidjs/unicode-variants": "^1.0.4"
+    "@orchidjs/sifter": "1.0.3",
+    "@orchidjs/unicode-variants": "1.0.4"
   }
 }

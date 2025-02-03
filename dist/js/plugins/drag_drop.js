@@ -4,10 +4,10 @@
 */
 
 (function (global, factory) {
-	typeof exports === 'object' && typeof module !== 'undefined' ? module.exports = factory(require('@orchidjs/sifter/lib/utils')) :
-	typeof define === 'function' && define.amd ? define(['@orchidjs/sifter/lib/utils'], factory) :
-	(global = typeof globalThis !== 'undefined' ? globalThis : global || self, global.drag_drop = factory(global.utils));
-})(this, (function (utils) { 'use strict';
+	typeof exports === 'object' && typeof module !== 'undefined' ? module.exports = factory() :
+	typeof define === 'function' && define.amd ? define(factory) :
+	(global = typeof globalThis !== 'undefined' ? globalThis : global || self, global.drag_drop = factory());
+})(this, (function () { 'use strict';
 
 	/**
 	 * Converts a scalar to its best string representation
@@ -45,6 +45,90 @@
 	  target.addEventListener(type, callback, options);
 	};
 
+	/*! @orchidjs/unicode-variants | https://github.com/orchidjs/unicode-variants | Apache License (v2) */
+	const accent_pat = '[\u0300-\u036F\u{b7}\u{2be}\u{2bc}]';
+	/** @type {TUnicodeMap} */
+
+	const latin_convert = {};
+	/** @type {TUnicodeMap} */
+
+	const latin_condensed = {
+	  '/': '⁄∕',
+	  '0': '߀',
+	  "a": "ⱥɐɑ",
+	  "aa": "ꜳ",
+	  "ae": "æǽǣ",
+	  "ao": "ꜵ",
+	  "au": "ꜷ",
+	  "av": "ꜹꜻ",
+	  "ay": "ꜽ",
+	  "b": "ƀɓƃ",
+	  "c": "ꜿƈȼↄ",
+	  "d": "đɗɖᴅƌꮷԁɦ",
+	  "e": "ɛǝᴇɇ",
+	  "f": "ꝼƒ",
+	  "g": "ǥɠꞡᵹꝿɢ",
+	  "h": "ħⱨⱶɥ",
+	  "i": "ɨı",
+	  "j": "ɉȷ",
+	  "k": "ƙⱪꝁꝃꝅꞣ",
+	  "l": "łƚɫⱡꝉꝇꞁɭ",
+	  "m": "ɱɯϻ",
+	  "n": "ꞥƞɲꞑᴎлԉ",
+	  "o": "øǿɔɵꝋꝍᴑ",
+	  "oe": "œ",
+	  "oi": "ƣ",
+	  "oo": "ꝏ",
+	  "ou": "ȣ",
+	  "p": "ƥᵽꝑꝓꝕρ",
+	  "q": "ꝗꝙɋ",
+	  "r": "ɍɽꝛꞧꞃ",
+	  "s": "ßȿꞩꞅʂ",
+	  "t": "ŧƭʈⱦꞇ",
+	  "th": "þ",
+	  "tz": "ꜩ",
+	  "u": "ʉ",
+	  "v": "ʋꝟʌ",
+	  "vy": "ꝡ",
+	  "w": "ⱳ",
+	  "y": "ƴɏỿ",
+	  "z": "ƶȥɀⱬꝣ",
+	  "hv": "ƕ"
+	};
+
+	for (let latin in latin_condensed) {
+	  let unicode = latin_condensed[latin] || '';
+
+	  for (let i = 0; i < unicode.length; i++) {
+	    let char = unicode.substring(i, i + 1);
+	    latin_convert[char] = latin;
+	  }
+	}
+
+	new RegExp(Object.keys(latin_convert).join('|') + '|' + accent_pat, 'gu');
+
+	/**
+	 * Iterates over arrays and hashes.
+	 *
+	 * ```
+	 * iterate(this.items, function(item, id) {
+	 *    // invoked for each item
+	 * });
+	 * ```
+	 *
+	 */
+	const iterate = (object, callback) => {
+	  if (Array.isArray(object)) {
+	    object.forEach(callback);
+	  } else {
+	    for (var key in object) {
+	      if (object.hasOwnProperty(key)) {
+	        callback(object[key], key);
+	      }
+	    }
+	  }
+	};
+
 	/**
 	 * Return a dom element from either a dom query string, jQuery object, a dom element or html string
 	 * https://stackoverflow.com/questions/494143/creating-a-new-dom-element-from-an-html-string-using-built-in-dom-methods-or-pro/35385518#35385518
@@ -77,7 +161,7 @@
 	 *
 	 */
 	const setAttr = (el, attrs) => {
-	  utils.iterate(attrs, (val, attr) => {
+	  iterate(attrs, (val, attr) => {
 	    if (val == null) {
 	      el.removeAttribute(attr);
 	    } else {

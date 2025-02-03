@@ -1989,10 +1989,8 @@ export default class TomSelect extends MicroPlugin(MicroEvent){
 					}
 				}
 
-				// refreshOptions after setActiveOption(),
-				// otherwise setActiveOption() will be called by refreshOptions() with the wrong value
-				if( !self.isPending && !self.settings.closeAfterSelect ){
-					self.refreshOptions(self.isFocused && inputMode !== 'single');
+				if( !self.isPending && !self.settings.closeAfterSelect && !self.settings.hideSelected ) {
+					(self.getOption(hashed) as HTMLElement).classList.toggle('selected', self.items.includes(hashed))
 				}
 
 				// hide the menu if the maximum number of items have been selected or no options are left

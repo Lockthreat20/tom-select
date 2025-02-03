@@ -2441,7 +2441,6 @@
 	    } else {
 	      value = option.dataset.value;
 	      if (typeof value !== 'undefined') {
-	        self.lastQuery = null;
 	        self.addItem(value);
 	        if (self.settings.closeAfterSelect) {
 	          self.close();
@@ -3471,7 +3470,6 @@
 	      removeClasses(item, 'active');
 	    }
 	    self.items.splice(i, 1);
-	    self.lastQuery = null;
 	    if (!self.settings.persist && self.userOptions.hasOwnProperty(value)) {
 	      self.removeOption(value, silent);
 	    }
